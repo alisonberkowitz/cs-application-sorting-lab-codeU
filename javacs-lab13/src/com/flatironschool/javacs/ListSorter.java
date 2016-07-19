@@ -64,7 +64,34 @@ public class ListSorter<T> {
 	 */
 	public List<T> mergeSort(List<T> list, Comparator<T> comparator) {
         // FILL THIS IN!
-        return null;
+        if (list.size()<2) {
+        	return list;
+        }
+        List<T> half1 = new ArrayList<T>();
+        List<T> half2 = new ArrayList<T>();
+        half1.addAll(list.subList(0, list.size()/2));
+        half2.addAll(list.subList(list.size()/2, list.size()));
+
+        ListSorter<T> sorter = new ListSorter<T>();
+		half1 = sorter.mergeSort(half1, comparator);
+		half2 = sorter.mergeSort(half2, comparator);
+
+		//merge them
+		List<T> res = new ArrayList<T>();
+		int a = 0;
+		int b = 0;
+		while (a<half1.size() && b<half2.size()) {
+			if (comparator.compare(half1.get(a), half2.get(b)) >= 0) {
+				res.add(half2.get(b));
+				b++;
+			} else {
+				res.add(half1.get(a));
+				a++;
+			}
+		}
+		res.addAll(half1.subList(a, half1.size()));
+		res.addAll(half2.subList(b, half2.size()));
+        return res;
 	}
 
 	/**
@@ -76,6 +103,15 @@ public class ListSorter<T> {
 	 */
 	public void heapSort(List<T> list, Comparator<T> comparator) {
         // FILL THIS IN!
+        PriorityQueue<T> queue = new PriorityQueue<T>();
+        int s = list.size();
+        for (int i=0; i < s; i++) {
+        	queue.offer(list.get(i));        	
+        }
+        list.clear();
+        for (int i=0; i < s; i++) {
+        	list.add(queue.poll());        	
+        }
 	}
 
 	
@@ -90,7 +126,23 @@ public class ListSorter<T> {
 	 */
 	public List<T> topK(int k, List<T> list, Comparator<T> comparator) {
         // FILL THIS IN!
-        return null;
+        PriorityQueue<T> queue = new PriorityQueue<T>();
+        for (int i=0; i < k; i++) {
+        	queue.offer(list.get(i));        	
+        }
+        for (int j=k; j < list.size(); j++) {
+        	T smallest = queue.poll();
+        	if (comparator.compare(list.get(j), smallest) >= 0) {
+        		queue.offer(list.get(j));
+        	} else {
+        		queue.offer(smallest);
+        	}       	
+        }
+        List<T> res = new ArrayList();
+        for (int i=0; i < k; i++) {
+        	res.add(queue.poll());
+        }
+        return res;
 	}
 
 	
